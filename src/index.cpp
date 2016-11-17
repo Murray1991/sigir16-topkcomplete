@@ -79,6 +79,7 @@ int main(int argc, char* argv[]){
     } else {
         
         int k = atoi(argv[3]);
+        std::string word;
         std::string out_file("outfile."+index_name);
         std::string test_file(argv[4]);
         std::vector<std::string> prefixes;
@@ -88,8 +89,9 @@ int main(int argc, char* argv[]){
         trunc_file(out_file);
         auto start = chrono::high_resolution_clock::now();
         for ( auto& prefix : prefixes ) {
+            std::transform(prefix.begin(), prefix.end(), word.begin(), ::tolower);
             auto query_start = chrono::high_resolution_clock::now(); 
-            auto result_list = topk_index.top_k(prefix, k);
+            auto result_list = topk_index.top_k(word, k);
             auto query_time  = chrono::high_resolution_clock::now() - query_start;
             auto query_us    = chrono::duration_cast<chrono::microseconds>(query_time).count();
             total_us        += query_us;
@@ -102,7 +104,7 @@ int main(int argc, char* argv[]){
         std::ifstream t(out_file);
         std::stringstream buffer;
         buffer << t.rdbuf();
-        std::remove(out_file.c_str());
+        //std::remove(out_file.c_str());
         
         std::hash<std::string> hash_fn;
         size_t buffer_hash = hash_fn(buffer.str());
