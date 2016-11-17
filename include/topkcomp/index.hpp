@@ -43,22 +43,17 @@ namespace topkcomp{
                 string s_weight;
                 getline(in, s_weight);
                 uint64_t weight = stoull(s_weight);
+                std::transform(entry.begin(), entry.end(), entry.begin(), ::tolower);
                 string_weight.emplace_back(entry, weight);
             }
             if ( case_sensitive ) {
                 sort(string_weight.begin(), string_weight.end());
             } else {
-                sort(string_weight.begin(), string_weight.end(),[](const tPSU& a, const tPSU& b){
-                    const uint8_t* ap = (const uint8_t*)(a.first.c_str());
-                    const uint8_t* bp = (const uint8_t*)(b.first.c_str());
-                    while ( std::tolower(*ap) == std::tolower(*bp) ) {
-                        if ( *ap == 0 ) {
-                            return false;
-                        } else {
-                            ++ap; ++bp;
-                        }
-                    }
-                    return std::tolower(*ap) < std::tolower(*bp);
+                std::sort(string_weight.begin(), string_weight.end(), [](const tPSU& a, const tPSU& b) {
+                    int res = a.first.compare(b.first);
+                    if ( res == 0)
+                        return a.second > b.second;
+                    return res < 0;
                 });
             }
             cout << "Read and sorted " << string_weight.size() << " string." << endl;
@@ -69,21 +64,9 @@ namespace topkcomp{
                                          });
                 string_weight.resize(unique_end-string_weight.begin());
             } else {
-                auto unique_end = unique(string_weight.begin(), string_weight.end(),
-                                         [](const tPSU& a, const tPSU& b) {
-                                            if ( a.first.size() != b.first.size() )
-                                                return false;
-                                            const uint8_t* ap = (const uint8_t*)(a.first.c_str());
-                                            const uint8_t* bp = (const uint8_t*)(b.first.c_str());
-                                            while ( std::tolower(*ap) == std::tolower(*bp) ) {
-                                                if ( *ap == 0 ) {
-                                                    return true;
-                                                } else {
-                                                    ++ap; ++bp;
-                                                }
-                                            }
-                                            return false;
-                                         });
+                auto unique_end = std::unique(string_weight.begin(), string_weight.end(), [](const tPSU& a, const tPSU& b){
+                    return (a.first.size() == b.first.size() && a.first.compare(b.first) == 0);
+                });
                 string_weight.resize(unique_end-string_weight.begin());
             }
             cout << "Number of unique strings is " << string_weight.size() << "." << endl;

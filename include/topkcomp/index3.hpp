@@ -28,7 +28,7 @@ class index3 {
 
     public:
         typedef size_t size_type;
-        constexpr static bool case_sensitive = true;
+        constexpr static bool case_sensitive = false;
 
         // Constructor takes a sorted list of (string,weight)-pairs
         index3(const tVPSU& string_weight=tVPSU()) {
