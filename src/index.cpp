@@ -60,13 +60,16 @@ int main(int argc, char* argv[]){
     }
 
     if ( !test ) {
+        std::string word;
         cout << "Please enter queries line by line." << endl;
         cout << "Pressing Crtl-D will quit the program." << endl;
         string prefix;
         while ( getline(cin, prefix) ) {
-            auto query_start = clock::now();
-            auto result_list = topk_index.top_k(prefix, 5);
-            auto query_time  = clock::now() - query_start;
+            word.resize(prefix.size());
+            std::transform(prefix.begin(), prefix.end(), word.begin(), ::tolower);
+            auto query_start = chrono::high_resolution_clock::now(); 
+            auto result_list = topk_index.top_k(word, 5);
+            auto query_time  = chrono::high_resolution_clock::now() - query_start;
             auto query_us    = chrono::duration_cast<chrono::microseconds>(query_time).count();
             
             cout << "-- top results:" << endl;
@@ -89,6 +92,7 @@ int main(int argc, char* argv[]){
         trunc_file(out_file);
         auto start = chrono::high_resolution_clock::now();
         for ( auto& prefix : prefixes ) {
+            word.resize(prefix.size());
             std::transform(prefix.begin(), prefix.end(), word.begin(), ::tolower);
             auto query_start = chrono::high_resolution_clock::now(); 
             auto result_list = topk_index.top_k(word, k);
@@ -104,7 +108,7 @@ int main(int argc, char* argv[]){
         std::ifstream t(out_file);
         std::stringstream buffer;
         buffer << t.rdbuf();
-        //std::remove(out_file.c_str());
+        std::remove(out_file.c_str());
         
         std::hash<std::string> hash_fn;
         size_t buffer_hash = hash_fn(buffer.str());
