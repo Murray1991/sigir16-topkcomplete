@@ -1,6 +1,7 @@
-git submodule init
-git submodule update
-mkdir -p build
-cd build
-cmake ..
-make
+#!/bin/bash
+
+DIRECTORY=./external
+
+[ ! -d $DIRECTORY ] && mkdir $DIRECTORY
+git clone https://github.com/simongog/sdsl-lite.git $DIRECTORY/sdsl-lite
+./external/sdsl-lite/install.sh ./sdsl
