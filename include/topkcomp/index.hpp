@@ -28,7 +28,7 @@ namespace topkcomp{
         constexpr bool case_sensitive = t_index::case_sensitive;
         using clock = chrono::high_resolution_clock;
         if ( load_from_file(index, index_file) ){
-            cout << "Load index from "<<index_file << endl;
+            //cout << "Load index from "<<index_file << endl;
         } else {
             cout << "Index of " << file << " does not exists." << endl;
             cout << "Start generation" << endl;

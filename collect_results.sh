@@ -9,7 +9,7 @@ FILE=$1
 F="${FILE##*/}"
 TESTDIR=./test/test_cases/
 
-for index in 1 2 2a 3 3a 3b 3c 4a 4b 4c 4ci 
+for index in 1 2 2a 3 3a 3b 4 4a 4b 4c 4ci 
 do
     echo "Collecting results for $INDEX$index..."
     for test in `ls $TESTDIR`
